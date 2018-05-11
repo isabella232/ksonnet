@@ -147,12 +147,12 @@ func diffAll(a []*unstructured.Unstructured, b map[string]*unstructured.Unstruct
 			bObj = b[desc].Object
 		}
 
-		var err error
 		log.Debugf("Diffing %s\nA: %s\nB: %s\n", desc, o.Object, bObj)
-		diffFound, err = diff(desc, aName, bName, strategy, o.Object, bObj, out)
+		objDiffFound, err := diff(desc, aName, bName, strategy, o.Object, bObj, out)
 		if err != nil {
 			return err
 		}
+		diffFound = diffFound || objDiffFound
 	}
 
 	if diffFound {
