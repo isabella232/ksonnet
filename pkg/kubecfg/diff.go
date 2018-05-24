@@ -162,9 +162,9 @@ func diffAll(a []*unstructured.Unstructured, b map[string]*unstructured.Unstruct
 }
 
 func diff(desc, aName, bName, strategy string, aObj, bObj map[string]interface{}, out io.Writer) (diffFound bool, err error) {
-	fmt.Fprintln(out, "---")
-	fmt.Fprintf(out, "- %s %s\n+ %s %s\n", bName, desc, aName, desc)
 	if bObj == nil {
+		fmt.Fprintln(out, "---")
+		fmt.Fprintf(out, "- %s %s\n+ %s %s\n", bName, desc, aName, desc)
 		fmt.Fprintf(out, "%s doesn't exist on %s\n", desc, bName)
 		return true, nil
 	}
@@ -175,6 +175,8 @@ func diff(desc, aName, bName, strategy string, aObj, bObj map[string]interface{}
 	diff := gojsondiff.New().CompareObjects(bObj, aObj)
 
 	if diff.Modified() {
+		fmt.Fprintln(out, "---")
+		fmt.Fprintf(out, "- %s %s\n+ %s %s\n", bName, desc, aName, desc)
 		fcfg := formatter.AsciiFormatterConfig{
 			Coloring: istty(out),
 		}
@@ -186,8 +188,6 @@ func diff(desc, aName, bName, strategy string, aObj, bObj map[string]interface{}
 		fmt.Fprintf(out, "%s", text)
 		return true, nil
 	}
-
-	fmt.Fprintf(out, "%s unchanged\n", desc)
 	return false, nil
 }
 
