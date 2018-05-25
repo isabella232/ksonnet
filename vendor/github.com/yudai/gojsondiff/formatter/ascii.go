@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/pmezard/go-difflib/difflib"
 	diff "github.com/yudai/gojsondiff"
 )
 
@@ -179,11 +180,16 @@ func (f *AsciiFormatter) processItem(value interface{}, deltas []diff.Delta, pos
 				f.printRecursive(positionStr, d.NewValue, AsciiAdded)
 
 			case *diff.TextDiff:
-				savedSize := f.size[len(f.size)-1]
 				d := matchedDelta.(*diff.TextDiff)
-				f.printRecursive(positionStr, d.OldValue, AsciiDeleted)
-				f.size[len(f.size)-1] = savedSize
-				f.printRecursive(positionStr, d.NewValue, AsciiAdded)
+				diff := difflib.UnifiedDiff{
+					A:        difflib.SplitLines(d.OldValue.(string)),
+					B:        difflib.SplitLines(d.NewValue.(string)),
+					FromFile: "Original",
+					ToFile:   "Current",
+					Context:  3,
+				}
+				text, _ := difflib.GetUnifiedDiffString(diff)
+				f.printRecursive(positionStr, text, AsciiSame)
 
 			case *diff.Deleted:
 				d := matchedDelta.(*diff.Deleted)

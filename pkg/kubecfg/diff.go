@@ -188,6 +188,7 @@ func diff(desc, aName, bName, strategy string, aObj, bObj map[string]interface{}
 		fmt.Fprintf(out, "%s", text)
 		return true, nil
 	}
+
 	return false, nil
 }
 
