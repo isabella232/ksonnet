@@ -44,7 +44,7 @@ type TraceFrame struct {
 	Name string
 }
 
-func traceElementToTraceFrame(trace *TraceElement) TraceFrame {
+func traceElementToTraceFrame(trace TraceElement) TraceFrame {
 	tf := TraceFrame{Loc: *trace.loc}
 	if trace.context != nil {
 		// TODO(sbarzowski) maybe it should never be nil
@@ -55,6 +55,8 @@ func traceElementToTraceFrame(trace *TraceElement) TraceFrame {
 	return tf
 }
 
+// TraceElement represents tracing information, including a location range and a
+// surrounding context.
 // TODO(sbarzowski) better name
 type TraceElement struct {
 	loc     *ast.LocationRange

@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"sort"
-	"strings"
 
 	dmp "github.com/sergi/go-diff/diffmatchpatch"
 	"github.com/yudai/golcs"
@@ -261,9 +260,10 @@ func (differ *Differ) compareValues(
 
 	default:
 		if !reflect.DeepEqual(left, right) {
+
 			if reflect.ValueOf(left).Kind() == reflect.String &&
 				reflect.ValueOf(right).Kind() == reflect.String &&
-				strings.Contains(left.(string), "\n") {
+				differ.textDiffMinimumLength <= len(left.(string)) {
 
 				textDiff := dmp.New()
 				patchs := textDiff.PatchMake(left.(string), right.(string))
