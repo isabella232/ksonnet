@@ -40,7 +40,7 @@ func init() {
 	addEnvCmdFlags(diffCmd)
 	bindJsonnetFlags(diffCmd)
 	bindClientGoFlags(diffCmd)
-	diffCmd.PersistentFlags().String(flagDiffStrategy, "all", "Diff strategy, all or subset.")
+	diffCmd.PersistentFlags().String(flagDiffStrategy, "subset", "Diff strategy, all or subset.")
 	RootCmd.AddCommand(diffCmd)
 }
 
