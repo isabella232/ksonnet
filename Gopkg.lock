@@ -391,14 +391,16 @@
   revision = "708a42d246822952f38190a8d8c4e6b16a0e600c"
 
 [[projects]]
-  digest = "1:84d4f662c3cbd8364076ec9c7b082c53ea5be9de884d4bf06f61fe884a14cdcb"
+  branch = "master"
+  digest = "1:cb4fe89287aabcbd4399e00a6780d4298122058c2e65e2f4aec84d968c57e9a0"
   name = "github.com/yudai/gojsondiff"
   packages = [
     ".",
     "formatter",
   ]
   pruneopts = "UT"
-  revision = "9209d1532c51cabe0439993586a71c207b09a0ac"
+  revision = "513f5144a5f3086bc6752c2c65a9c6b577199999"
+  source = "github.com/tomwilkie/gojsondiff"
 
 [[projects]]
   branch = "master"

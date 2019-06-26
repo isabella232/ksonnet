@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/pmezard/go-difflib/difflib"
 	diff "github.com/yudai/gojsondiff"
 )
 
@@ -179,11 +180,16 @@ func (f *AsciiFormatter) processItem(value interface{}, deltas []diff.Delta, pos
 				f.printRecursive(positionStr, d.NewValue, AsciiAdded)
 
 			case *diff.TextDiff:
-				savedSize := f.size[len(f.size)-1]
 				d := matchedDelta.(*diff.TextDiff)
-				f.printRecursive(positionStr, d.OldValue, AsciiDeleted)
-				f.size[len(f.size)-1] = savedSize
-				f.printRecursive(positionStr, d.NewValue, AsciiAdded)
+				diff := difflib.UnifiedDiff{
+					A:        difflib.SplitLines(d.OldValue.(string)),
+					B:        difflib.SplitLines(d.NewValue.(string)),
+					FromFile: "Original",
+					ToFile:   "Current",
+					Context:  3,
+				}
+				text, _ := difflib.GetUnifiedDiffString(diff)
+				f.printRecursive(positionStr, text, AsciiSame)
 
 			case *diff.Deleted:
 				d := matchedDelta.(*diff.Deleted)
@@ -201,16 +207,16 @@ func (f *AsciiFormatter) processItem(value interface{}, deltas []diff.Delta, pos
 	return nil
 }
 
-func (f *AsciiFormatter) searchDeltas(deltas []diff.Delta, postion diff.Position) (results []diff.Delta) {
+func (f *AsciiFormatter) searchDeltas(deltas []diff.Delta, position diff.Position) (results []diff.Delta) {
 	results = make([]diff.Delta, 0)
 	for _, delta := range deltas {
 		switch delta.(type) {
 		case diff.PostDelta:
-			if delta.(diff.PostDelta).PostPosition() == postion {
+			if delta.(diff.PostDelta).PostPosition() == position {
 				results = append(results, delta)
 			}
 		case diff.PreDelta:
-			if delta.(diff.PreDelta).PrePosition() == postion {
+			if delta.(diff.PreDelta).PrePosition() == position {
 				results = append(results, delta)
 			}
 		default:
@@ -362,7 +368,7 @@ func (f *AsciiFormatter) printRecursive(name string, value interface{}, marker s
 
 func sortedKeys(m map[string]interface{}) (keys []string) {
 	keys = make([]string, 0, len(m))
-	for key, _ := range m {
+	for key := range m {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)

@@ -24,6 +24,10 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/yudai/gojsondiff"
+  source = "github.com/tomwilkie/gojsondiff"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/emicklei/go-restful"
